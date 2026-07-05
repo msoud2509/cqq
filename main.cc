@@ -1,0 +1,33 @@
+#include "include/cqq/circuit.h"
+#include "include/cqq/compiler_qasm.h"
+#include "include/cqq/simulator.h"
+
+int main() {
+    using namespace cqq;
+
+    QuantumSimulator simulator(8);
+    Circuit circuit = CompilerQASM::compile_circuit("sample_circuits/basic.qasm");
+
+    // Alternatively, you can create a circuit with operations directly
+    // Circuit circuit(2, 2);
+    // circuit.add_gate(GateType::H, {0});
+    // circuit.add_gate(GateType::H, {1});
+    // circuit.add_measurement(0, 0);
+    // circuit.add_measurement(1, 1);
+    // circuit.print_circuit();
+
+    int num_zero = 0;
+    int num_one = 0;
+    for (int i = 0; i < 1000; ++i) {
+        std::vector<unsigned> result = simulator.execute(circuit, 2);
+        if (result[0] == 0) {
+            num_zero++;
+        } else {
+            num_one++;
+        }
+        simulator.reset();
+    }
+    std::cout << "Measured 0: " << num_zero << " times, Measured 1: " << num_one << " times."
+              << std::endl;
+    return 0;
+}

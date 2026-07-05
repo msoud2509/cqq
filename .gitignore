@@ -1,0 +1,7 @@
+.vscode/
+
+# Executables and build outputs
+build/
+*.o
+*.out
+*.exe
