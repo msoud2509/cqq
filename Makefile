@@ -1,5 +1,5 @@
 CXX := g++
-CXXFLAGS := -std=c++20 -Wall -Wextra -pedantic -Iinclude
+CXXFLAGS := -std=c++20 -O3 -march=native -Wall -Wextra -pedantic -Iinclude
 
 BUILD_DIR := build
 TARGET := $(BUILD_DIR)/cqq

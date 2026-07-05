@@ -3,27 +3,30 @@
 #include <algorithm>
 #include <cmath>
 #include <complex>
+#include <execution>
 #include <random>
+#include <ranges>
 #include <stdexcept>
 
 namespace cqq {
 
 void apply_hadamard(QStateVector& qstate, unsigned target) {
-    const size_t mask = bit_mask(target);
+    const auto mask = bit_mask(target);
+    const auto inv_sqrt2 = 1.0 / std::sqrt(2.0);
 
     for (size_t i = 0; i < qstate.size(); ++i) {
         if ((i & mask) == 0) {
             size_t j = i | mask;
 
             std::complex<double> temp = qstate[i];
-            qstate[i] = (temp + qstate[j]) / std::sqrt(2.0);
-            qstate[j] = (temp - qstate[j]) / std::sqrt(2.0);
+            qstate[i] = (temp + qstate[j]) * inv_sqrt2;
+            qstate[j] = (temp - qstate[j]) * inv_sqrt2;
         }
     }
 }
 
 void apply_pauli_x(QStateVector& qstate, unsigned target) {
-    const size_t mask = bit_mask(target);
+    const auto mask = bit_mask(target);
 
     for (size_t i = 0; i < qstate.size(); ++i) {
         if ((i & mask) == 0) {
@@ -34,7 +37,7 @@ void apply_pauli_x(QStateVector& qstate, unsigned target) {
 }
 
 void apply_pauli_y(QStateVector& qstate, unsigned target) {
-    const size_t mask = bit_mask(target);
+    const auto mask = bit_mask(target);
 
     for (size_t i = 0; i < qstate.size(); ++i) {
         if ((i & mask) == 0) {
@@ -48,7 +51,7 @@ void apply_pauli_y(QStateVector& qstate, unsigned target) {
 }
 
 void apply_pauli_z(QStateVector& qstate, unsigned target) {
-    const size_t mask = bit_mask(target);
+    const auto mask = bit_mask(target);
 
     for (size_t i = 0; i < qstate.size(); ++i) {
         if ((i & mask)) {
@@ -58,8 +61,8 @@ void apply_pauli_z(QStateVector& qstate, unsigned target) {
 }
 
 void apply_controlled_not(QStateVector& qstate, unsigned control, unsigned target) {
-    const size_t cmask = bit_mask(control);
-    const size_t tmask = bit_mask(target);
+    const auto cmask = bit_mask(control);
+    const auto tmask = bit_mask(target);
 
     for (size_t i = 0; i < qstate.size(); ++i) {
         if ((i & cmask) && !(i & tmask)) {
@@ -73,8 +76,8 @@ void apply_swap(QStateVector& qstate, unsigned q1, unsigned q2) {
     if (q1 == q2)
         return;
 
-    const size_t m1 = bit_mask(q1);
-    const size_t m2 = bit_mask(q2);
+    const auto m1 = bit_mask(q1);
+    const auto m2 = bit_mask(q2);
 
     for (size_t i = 0; i < qstate.size(); ++i) {
         if ((i & m1) != (i & m2)) {
@@ -92,7 +95,7 @@ void measure(QStateVector& qstate, unsigned qubit, unsigned& creg) {
         throw std::invalid_argument("Qubit index out of range.");
     }
 
-    const size_t mask = bit_mask(qubit);
+    const auto mask = bit_mask(qubit);
 
     double prob_0 = 0.0;
     for (size_t i = 0; i < qstate.size(); ++i) {
@@ -115,9 +118,10 @@ void measure(QStateVector& qstate, unsigned qubit, unsigned& creg) {
         }
     }
 
+    double inv_sqrt_normal_factor = 1.0 / std::sqrt(normal_factor);
     for (size_t i = 0; i < qstate.size(); ++i) {
         if ((i & mask) == result) {
-            qstate[i] /= std::sqrt(normal_factor);
+            qstate[i] *= inv_sqrt_normal_factor;
         }
     }
 }

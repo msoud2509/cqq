@@ -2,6 +2,9 @@
 #include "include/cqq/compiler_qasm.h"
 #include "include/cqq/simulator.h"
 
+#include <chrono>
+#include <iostream>
+
 int main() {
     using namespace cqq;
 
@@ -18,6 +21,7 @@ int main() {
 
     int num_zero = 0;
     int num_one = 0;
+    auto start_time = std::chrono::high_resolution_clock::now();
     for (int i = 0; i < 1000; ++i) {
         std::vector<unsigned> result = simulator.execute(circuit, 2);
         if (result[0] == 0) {
@@ -27,6 +31,9 @@ int main() {
         }
         simulator.reset();
     }
+    auto end_time = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> elapsed = end_time - start_time;
+    std::cout << "Execution time for 1000 shots: " << elapsed.count() << std::endl;
     std::cout << "Measured 0: " << num_zero << " times, Measured 1: " << num_one << " times."
               << std::endl;
     return 0;
