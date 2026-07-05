@@ -8,3 +8,8 @@ An example run is provided in `main.cc`. To compile and run the project, use the
 make
 make run
 ```
+
+To format the code, use:
+```bash
+make format
+```
