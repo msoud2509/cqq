@@ -1,10 +1,11 @@
 #ifndef SIMULATOR_H
 #define SIMULATOR_H
 
-#include <vector>
-
 #include "circuit.h"
 #include "states.h"
+
+#include <unordered_map>
+#include <vector>
 
 namespace cqq {
 
@@ -16,7 +17,7 @@ class QuantumSimulator {
   public:
     QuantumSimulator(unsigned num_qubits);
 
-    std::vector<unsigned> execute(const Circuit& circuit, int num_cregs, int shots = 1);
+    std::unordered_map<unsigned, unsigned> execute(const Circuit& circuit, unsigned shots = 1);
 
     void reset();
 

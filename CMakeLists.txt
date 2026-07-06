@@ -9,7 +9,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 add_compile_options(-Wall -Wextra -pedantic -march=native)
 
 file(GLOB_RECURSE SRC_FILES "src/*.cc")
-add_library(cqq_lib ${SRC_FILES})
+add_library(cqq_lib SHARED ${SRC_FILES})
 
 target_include_directories(cqq_lib PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
@@ -20,12 +20,12 @@ find_program(CLANG_FORMAT clang-format)
 if(CLANG_FORMAT)
     file(GLOB_RECURSE FORMAT_FILES 
         "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc"
-        "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp"
         "${CMAKE_CURRENT_SOURCE_DIR}/include/*.h"
         "${CMAKE_CURRENT_SOURCE_DIR}/main.cc"
-        "${CMAKE_CURRENT_SOURCE_DIR}/utils/*.h"
-        "${CMAKE_CURRENT_SOURCE_DIR}/utils/*.cc"
-        "${CMAKE_CURRENT_SOURCE_DIR}/utils/*.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/tests/*.h"
+        "${CMAKE_CURRENT_SOURCE_DIR}/tests/*.cc"
+        "${CMAKE_CURRENT_SOURCE_DIR}/benchmarks/*.cc"
+        "${CMAKE_CURRENT_SOURCE_DIR}/benchmarks/*.h"
     )
 
     add_custom_target(format
@@ -54,3 +54,7 @@ FetchContent_Declare(
 set(BENCHMARK_ENABLE_TESTING OFF CACHE BOOL "" FORCE)
 set(INSTALL_GTEST OFF CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest googlebenchmark)
+
+add_executable(cqq_benchmarks benchmarks/bm_simulation.cc)
+target_include_directories(cqq_benchmarks PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/benchmarks)
+target_link_libraries(cqq_benchmarks PRIVATE cqq_lib benchmark::benchmark_main)
