@@ -8,7 +8,7 @@
 int main() {
     using namespace cqq;
 
-    QuantumSimulator simulator(10);
+    QuantumSimulator simulator(24);
     Circuit circuit = CompilerQASM::compile_circuit("sample_circuits/swap_10.qasm");
 
     // Alternatively, you can create a circuit with operations directly
@@ -22,7 +22,7 @@ int main() {
     int num_zero = 0;
     int num_one = 0;
     auto start_time = std::chrono::high_resolution_clock::now();
-    for (int i = 0; i < 1000; ++i) {
+    for (int i = 0; i < 1024; ++i) {
         std::vector<unsigned> result = simulator.execute(circuit, 2);
         if (result[0] == 0) {
             num_zero++;
