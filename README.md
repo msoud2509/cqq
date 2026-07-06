@@ -18,3 +18,5 @@ To format the code, run:
 ```bash
 cmake --build build --target format
 ```
+
+**NOTE:** To see benchmark usage and results, see [`BENCHMARKS.md`](BENCHMARKS.md).

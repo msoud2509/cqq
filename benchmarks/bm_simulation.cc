@@ -16,16 +16,17 @@ static void BM_Simulation(benchmark::State& state) {
         benchmarks::generate_random_qasm_circuit(num_qubits, num_cregs, num_gates, seed);
     QuantumSimulator simulator(num_qubits);
 
+    // actual benchmarking loop
     for (auto _ : state) {
-        std::vector<unsigned> results = simulator.execute(circuit, num_cregs, num_shots);
+        std::unordered_map<unsigned, unsigned> results = simulator.execute(circuit, num_shots);
         benchmark::DoNotOptimize(results);
         simulator.reset();
     }
 }
 
 BENCHMARK(BM_Simulation)
-    ->Args({16, 16, 100, 1024, 42})
-    ->Args({16, 16, 150, 1024, 100})
-    ->Args({16, 16, 200, 1024, 1337})
-    ->Args({20, 20, 250, 1024, 5050})
-    ->Args({20, 20, 300, 1024, 413});
+    ->Args({8,  8,  100, 1024, 42})
+    ->Args({8,  8,  150, 1024, 100})
+    ->Args({16, 16, 100, 1024, 1337})
+    ->Args({16, 16, 150, 1024, 5050})
+    ->Args({16, 16, 200, 1024, 413});
