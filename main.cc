@@ -8,7 +8,7 @@
 int main() {
     using namespace cqq;
 
-    QuantumSimulator simulator(24);
+    QuantumSimulator simulator(10);
     Circuit circuit = CompilerQASM::compile_circuit("sample_circuits/swap_10.qasm");
 
     // Alternatively, you can create a circuit with operations directly
