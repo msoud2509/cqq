@@ -10,7 +10,7 @@ cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 
 To compile and run the project, use the following commands:
 ```bash
-cmake --build build
+cmake --build build --target cqq
 ./build/cqq
 ```
 
