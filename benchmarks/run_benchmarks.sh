@@ -153,6 +153,7 @@ if index == -1:
 insert_at = index + len(marker)
 new_entry = (
     f'\n## {new_version}\n\n'
+    f'*Add description here*\n\n'
     f'{benchmark_table}\n'
 )
 
