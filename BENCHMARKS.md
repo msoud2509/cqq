@@ -16,6 +16,11 @@ chmod +x benchmarks/run_benchmarks.sh
 
 ## v0.1.0
 
+**Initial Version**
+- Creates `std::vector` for simulation state
+- Utilizes bit manipulation for gate application
+- Uses O3 optimization (inherent in release mode for CMake) and -march=native flags for compilation.
+
 | Benchmark | Qubits | Classical regs | Gates | Shots | Seed | Time | CPU | Iterations |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | Random circuit simulation | 8 | 8 | 100 | 1024 | 42 | 79892096 ns (79.9 ms) | 76608444 ns (76.6 ms) | 9 |
