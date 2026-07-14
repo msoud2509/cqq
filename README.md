@@ -19,4 +19,17 @@ To format the code, run:
 cmake --build build --target format
 ```
 
+## Tests
+The project includes end-to-end tests built with GoogleTest. After configuring the build
+directory, build the test target and run the test suite with CTest:
+```bash
+cmake --build build --target cqq_e2e_tests
+ctest --test-dir build --output-on-failure
+```
+
+You can also run the test binary directly:
+```bash
+./build/cqq_e2e_tests
+```
+
 **NOTE:** To see benchmark usage and results, see [`BENCHMARKS.md`](BENCHMARKS.md).
