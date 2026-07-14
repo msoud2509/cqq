@@ -3,6 +3,8 @@
 #include <fstream>
 #include <sstream>
 #include <stdexcept>
+#include <vector>
+#include <optional>
 
 namespace cqq {
 
@@ -32,6 +34,32 @@ unsigned CompilerQASM::extract_index(const std::string& args_str) {
     return index;
 }
 
+std::optional<RawInstruction> CompilerQASM::parse_statement(const std::string stmt) {
+    if (stmt.empty()) {
+        return std::nullopt;
+    }
+
+    // Skip headers/includes for basic simulation
+    if (stmt.rfind("OPENQASM", 0) == 0 || stmt.rfind("include", 0) == 0) {
+        return std::nullopt; 
+    }
+
+    std::stringstream ss(stmt);
+    std::string command;
+    ss >> command;
+
+    std::vector<unsigned> operands;
+    std::string operand;
+    while (ss >> operand) {
+        if (operand == "->") {
+            continue;
+        }
+        operands.push_back(extract_index(operand));
+    }
+
+    return RawInstruction{command, operands};
+}
+
 std::vector<RawInstruction> CompilerQASM::parse_file(const std::string& filename) {
     std::ifstream file(filename);
     if (!file.is_open()) {
@@ -39,44 +67,39 @@ std::vector<RawInstruction> CompilerQASM::parse_file(const std::string& filename
     }
 
     std::vector<RawInstruction> instructions;
-
     std::string line;
+    std::string buffer;
     unsigned line_number = 0;
+
     try {
         while (std::getline(file, line)) {
             ++line_number;
-            line = trim(line);
 
-            if (line.empty() || line.rfind("//", 0) == 0) {
-                continue; // Skip empty lines and comments
-            }
-            if (line.rfind("OPENQASM", 0) == 0 || line.rfind("include", 0) == 0) {
-                continue; // Skip headers/includes for basic simulation
-            }
-            if (line.back() == ';') {
-                line.pop_back(); // Remove the trailing semicolon
-                line = trim(line);
+            // strip comments
+            auto comment_pos = line.find("//");
+            if (comment_pos != std::string::npos) {
+                line = line.substr(0, comment_pos);
             }
 
-            std::stringstream ss(line);
-            std::string command;
-            ss >> command;
+            buffer = trim(line);
 
-            std::vector<unsigned> operands;
-            while (ss) {
-                std::string operand;
-                ss >> operand;
+            size_t semicolon_pos;
+            while ((semicolon_pos = buffer.find(';')) != std::string::npos) {
+                std::string stmt = buffer.substr(0, semicolon_pos);
+                stmt = trim(stmt);
 
-                if (operand == "->")
-                    continue;
-
-                if (!operand.empty()) {
-                    operands.push_back(extract_index(operand));
+                if (auto instr = parse_statement(stmt)) {
+                    instructions.push_back(*instr);
                 }
-            }
 
-            instructions.push_back({command, operands});
+                buffer = buffer.substr(semicolon_pos + 1);
+            }
         }
+
+        if (!trim(buffer).empty()) {
+            throw std::runtime_error("Incomplete statement at end of file.");
+        }
+
     } catch (const std::exception& e) {
         throw std::runtime_error(
             "Error parsing QASM file at line " + std::to_string(line_number) + ": " + e.what());

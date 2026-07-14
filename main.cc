@@ -4,6 +4,7 @@
 
 #include <chrono>
 #include <iostream>
+#include <string>
 
 int main() {
     using namespace cqq;
@@ -19,21 +20,25 @@ int main() {
     // circuit.add_measurement(1, 1);
     // circuit.print_circuit();
 
-    int num_zero = 0;
-    int num_one = 0;
+    unsigned num_shots = 1024;
 
     auto start_time = std::chrono::high_resolution_clock::now();
-    auto result = simulator.execute(circuit, 1024);
-    if (result[0] == 0) {
-        num_zero++;
-    } else {
-        num_one++;
-    }
+    auto result = simulator.execute(circuit, num_shots);
     auto end_time = std::chrono::high_resolution_clock::now();
-    
+
     std::chrono::duration<double> elapsed = end_time - start_time;
-    std::cout << "Execution time for 1000 shots: " << elapsed.count() << std::endl;
-    std::cout << "Measured 0: " << num_zero << " times, Measured 1: " << num_one << " times."
-              << std::endl;
+    std::cout << "Execution time for " << num_shots << " shots: " << elapsed.count() << std::endl;
+
+    std::cout << "Measurement histogram:" << std::endl;
+    for (const auto& [outcome, count] : result) {
+        std::string bits(circuit.get_num_cregs(), '0');
+        for (unsigned i = 0; i < circuit.get_num_cregs(); ++i) {
+            if ((outcome >> i) & 1u) {
+                bits[circuit.get_num_cregs() - 1 - i] = '1';
+            }
+        }
+
+        std::cout << "  0b" << bits << ": " << count << std::endl;
+    }
     return 0;
 }
