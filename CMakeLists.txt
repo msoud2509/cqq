@@ -64,6 +64,11 @@ target_compile_definitions(cqq_e2e_tests PRIVATE
 target_link_libraries(cqq_e2e_tests PRIVATE cqq_lib GTest::gtest_main)
 gtest_discover_tests(cqq_e2e_tests)
 
+add_executable(cqq_unit_tests
+  tests/unit/operations_unit.cc)
+target_link_libraries(cqq_unit_tests PRIVATE cqq_lib GTest::gtest_main)
+gtest_discover_tests(cqq_unit_tests)
+
 add_executable(cqq_benchmarks benchmarks/bm_simulation.cc)
 target_include_directories(cqq_benchmarks PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/benchmarks)
 target_link_libraries(cqq_benchmarks PRIVATE cqq_lib benchmark::benchmark_main)
