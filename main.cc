@@ -12,8 +12,8 @@ constexpr unsigned NUM_SHOTS = 1024;
 int main() {
     using namespace cqq;
 
-    QuantumSimulator simulator(10);
-    Circuit circuit = CompilerQASM::compile_circuit("sample_circuits/ghz_10.qasm");
+    QuantumSimulator simulator(12);
+    Circuit circuit = CompilerQASM::compile_circuit("sample_circuits/hardware_ansatz_12.qasm");
 
     // Alternatively, you can create a circuit with build operations directly
     // Circuit circuit(2, 2);
@@ -24,23 +24,22 @@ int main() {
     // circuit.print_circuit();
 
     auto start_time = std::chrono::high_resolution_clock::now();
-    auto result = simulator.execute(circuit, NUM_SHOTS);
+    auto result = simulator.execute(circuit, num_shots);
     auto end_time = std::chrono::high_resolution_clock::now();
 
     std::chrono::duration<double> elapsed = end_time - start_time;
-    std::cout << "Execution time for " << NUM_SHOTS << " shots: " << elapsed.count() << std::endl;
-    
-    // convert the measurement results to bitstrings and print them
-    const unsigned num_bits = circuit.get_num_cregs();
-    for (const auto& [measurement, count] : result) {
-        std::string bitstring(num_bits, '0');
-        for (unsigned bit = 0; bit < num_bits; ++bit) {
-            if (measurement & (1U << bit)) {
-                bitstring[num_bits - 1 - bit] = '1';
+    std::cout << "Execution time for " << num_shots << " shots: " << elapsed.count() << std::endl;
+
+    std::cout << "Measurement histogram:" << std::endl;
+    for (const auto& [outcome, count] : result) {
+        std::string bits(circuit.get_num_cregs(), '0');
+        for (unsigned i = 0; i < circuit.get_num_cregs(); ++i) {
+            if ((outcome >> i) & 1u) {
+                bits[circuit.get_num_cregs() - 1 - i] = '1';
             }
         }
-        std::cout << "Measured " << bitstring << " (" << measurement << "): " << count << " times."
-                  << std::endl;
+
+        std::cout << "  0b" << bits << ": " << count << std::endl;
     }
     return 0;
 }
