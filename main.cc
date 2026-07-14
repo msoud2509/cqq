@@ -5,6 +5,9 @@
 #include <chrono>
 #include <iostream>
 #include <string>
+#include <unordered_map>
+
+constexpr unsigned NUM_SHOTS = 1024;
 
 int main() {
     using namespace cqq;
@@ -19,8 +22,6 @@ int main() {
     // circuit.add_measurement(0, 0);
     // circuit.add_measurement(1, 1);
     // circuit.print_circuit();
-
-    unsigned num_shots = 1024;
 
     auto start_time = std::chrono::high_resolution_clock::now();
     auto result = simulator.execute(circuit, num_shots);
