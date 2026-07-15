@@ -4,10 +4,10 @@
 #include "circuit.h"
 
 #include <fstream>
+#include <optional>
 #include <sstream>
 #include <string>
 #include <vector>
-#include <optional>
 
 namespace cqq {
 
@@ -24,7 +24,8 @@ class CompilerQASM {
     // Extracts the index from a string representing a register.
     static unsigned extract_index(const std::string& args_str);
 
-    // Parses a single statements passed to it by the parse_file function and returns a RawInstruction object.
+    // Parses a single statements passed to it by the parse_file function and returns a
+    // RawInstruction object.
     static std::optional<RawInstruction> parse_statement(const std::string stmt);
 
     // Parses a qasm file and returns a vector of raw instructions.
