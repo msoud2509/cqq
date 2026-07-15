@@ -91,7 +91,7 @@ void apply_swap(QStateVector& qstate, unsigned q1, unsigned q2) {
 }
 
 void measure(QStateVector& qstate, unsigned qubit, unsigned& creg) {
-    if (qubit >= qstate.size()) {
+    if (qubit >= num_qubits(qstate)) {
         throw std::invalid_argument("Qubit index out of range.");
     }
 
@@ -111,7 +111,7 @@ void measure(QStateVector& qstate, unsigned qubit, unsigned& creg) {
 
     double normal_factor = 0.0;
     for (size_t i = 0; i < qstate.size(); ++i) {
-        if ((i & mask) != result) {
+        if (((i & mask) ? 1 : 0) != result) {
             qstate[i] = std::complex<double>(0.0, 0.0);
         } else {
             normal_factor += std::norm(qstate[i]);
@@ -120,9 +120,7 @@ void measure(QStateVector& qstate, unsigned qubit, unsigned& creg) {
 
     double inv_sqrt_normal_factor = 1.0 / std::sqrt(normal_factor);
     for (size_t i = 0; i < qstate.size(); ++i) {
-        if ((i & mask) == result) {
-            qstate[i] *= inv_sqrt_normal_factor;
-        }
+        qstate[i] *= inv_sqrt_normal_factor;
     }
 }
 

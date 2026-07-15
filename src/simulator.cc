@@ -1,5 +1,4 @@
 #include "../include/cqq/simulator.h"
-
 #include "../include/cqq/operations.h"
 
 #include <algorithm>

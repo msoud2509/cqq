@@ -22,10 +22,11 @@ if(CLANG_FORMAT)
         "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc"
         "${CMAKE_CURRENT_SOURCE_DIR}/include/*.h"
         "${CMAKE_CURRENT_SOURCE_DIR}/main.cc"
-        "${CMAKE_CURRENT_SOURCE_DIR}/tests/*.h"
-        "${CMAKE_CURRENT_SOURCE_DIR}/tests/*.cc"
+        "${CMAKE_CURRENT_SOURCE_DIR}/tests/*/*.h"
+        "${CMAKE_CURRENT_SOURCE_DIR}/tests/*/*.cc"
         "${CMAKE_CURRENT_SOURCE_DIR}/benchmarks/*.cc"
         "${CMAKE_CURRENT_SOURCE_DIR}/benchmarks/*.h"
+        "${CMAKE_CURRENT_SOURCE_DIR}/main.cc"
     )
 
     add_custom_target(format
