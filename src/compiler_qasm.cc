@@ -1,10 +1,10 @@
 #include "../include/cqq/compiler_qasm.h"
 
 #include <fstream>
+#include <optional>
 #include <sstream>
 #include <stdexcept>
 #include <vector>
-#include <optional>
 
 namespace cqq {
 
@@ -41,7 +41,7 @@ std::optional<RawInstruction> CompilerQASM::parse_statement(const std::string st
 
     // Skip headers/includes for basic simulation
     if (stmt.rfind("OPENQASM", 0) == 0 || stmt.rfind("include", 0) == 0) {
-        return std::nullopt; 
+        return std::nullopt;
     }
 
     std::stringstream ss(stmt);
