@@ -49,3 +49,134 @@ TEST(OperationsUnit, HadamardIsItsOwnInverse) {
 
     expect_state_near(state, basis_state(1, 0));
 }
+
+TEST(OperationsUnit, HadamardOnTwoQubits) {
+    auto state = basis_state(2, 0);
+
+    cqq::apply_hadamard(state, 0);
+    cqq::apply_hadamard(state, 1);
+
+    const auto inv_sqrt2 = 1.0 / std::sqrt(2.0);
+    const cqq::QStateVector expected = {std::complex<double>(inv_sqrt2 * inv_sqrt2, 0.0),
+        std::complex<double>(inv_sqrt2 * inv_sqrt2, 0.0),
+        std::complex<double>(inv_sqrt2 * inv_sqrt2, 0.0),
+        std::complex<double>(inv_sqrt2 * inv_sqrt2, 0.0)};
+
+    expect_state_near(state, expected);
+}
+
+TEST(OperationsUnit, HadamardOnOneQubitInTwoQubitSystem) {
+    auto state = basis_state(2, 0);
+
+    cqq::apply_hadamard(state, 1);
+
+    const auto inv_sqrt2 = 1.0 / std::sqrt(2.0);
+    const cqq::QStateVector expected = {std::complex<double>(inv_sqrt2, 0.0),
+        std::complex<double>(0.0, 0.0), std::complex<double>(inv_sqrt2, 0.0),
+        std::complex<double>(0.0, 0.0)};
+
+    expect_state_near(state, expected);
+}
+
+////////////////////////////////
+// Pauli-X Gate Tests
+////////////////////////////////
+TEST(OperationsUnit, PauliXMapsZeroToOne) {
+    auto state = basis_state(1, 0);
+
+    cqq::apply_pauli_x(state, 0);
+
+    expect_state_near(state, basis_state(1, 1));
+}
+
+TEST(OperationsUnit, PauliXIsItsOwnInverse) {
+    auto state = basis_state(1, 0);
+
+    cqq::apply_pauli_x(state, 0);
+    cqq::apply_pauli_x(state, 0);
+
+    expect_state_near(state, basis_state(1, 0));
+}
+
+TEST(OperationsUnit, PauliXOnTwoQubits) {
+    auto state = basis_state(2, 0);
+
+    cqq::apply_pauli_x(state, 0);
+    cqq::apply_pauli_x(state, 1);
+
+    expect_state_near(state, basis_state(2, 3));
+}
+
+////////////////////////////////
+// Pauli-Z Gate Tests
+////////////////////////////////
+TEST(OperationsUnit, PauliZMapsOneToNegativeOne) {
+    auto state = basis_state(1, 1);
+
+    cqq::apply_pauli_z(state, 0);
+
+    const cqq::QStateVector expected = {
+        std::complex<double>(0.0, 0.0), std::complex<double>(-1.0, 0.0)};
+    expect_state_near(state, expected);
+}
+
+TEST(OperationsUnit, PauliZDoesNotAffectZero) {
+    auto state = basis_state(1, 0);
+
+    cqq::apply_pauli_z(state, 0);
+
+    expect_state_near(state, basis_state(1, 0));
+}
+
+TEST(OperationsUnit, PauliZIsItsOwnInverse) {
+    auto state = basis_state(1, 1);
+
+    cqq::apply_pauli_z(state, 0);
+    cqq::apply_pauli_z(state, 0);
+
+    expect_state_near(state, basis_state(1, 1));
+}
+
+TEST(OperationsUnit, PauliZOnTwoQubits) {
+    auto state = basis_state(2, 3);
+
+    cqq::apply_pauli_z(state, 0);
+    cqq::apply_pauli_z(state, 1);
+
+    const cqq::QStateVector expected = {std::complex<double>(0.0, 0.0),
+        std::complex<double>(0.0, 0.0), std::complex<double>(0.0, 0.0),
+        std::complex<double>(1.0, 0.0)};
+    expect_state_near(state, expected);
+}
+
+////////////////////////////////
+// Pauli-Y Gate Tests
+////////////////////////////////
+TEST(OperationsUnit, PauliYMapsZeroToI) {
+    auto state = basis_state(1, 0);
+
+    cqq::apply_pauli_y(state, 0);
+
+    const cqq::QStateVector expected = {
+        std::complex<double>(0.0, 0.0), std::complex<double>(0.0, 1.0)};
+    expect_state_near(state, expected);
+}
+
+TEST(OperationsUnit, PauliYMapsOneToNegativeI) {
+    auto state = basis_state(1, 1);
+
+    cqq::apply_pauli_y(state, 0);
+
+    const cqq::QStateVector expected = {
+        std::complex<double>(0.0, -1.0), std::complex<double>(0.0, 0.0)};
+    expect_state_near(state, expected);
+}
+
+TEST(OperationsUnit, PauliYIsItsOwnInverse) {
+    auto state = basis_state(1, 0);
+
+    cqq::apply_pauli_y(state, 0);
+    cqq::apply_pauli_y(state, 0);
+
+    expect_state_near(state, basis_state(1, 0));
+}

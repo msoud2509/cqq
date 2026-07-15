@@ -29,7 +29,7 @@ ctest --test-dir build --output-on-failure
 
 You can also run the test binary directly:
 ```bash
-./build/cqq_e2e_tests
+./build/cqq_e2e_tests && ./build/cqq_unit_tests
 ```
 
 **NOTE:** To see benchmark usage and results, see [`BENCHMARKS.md`](BENCHMARKS.md).
