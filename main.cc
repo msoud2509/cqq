@@ -12,8 +12,8 @@ constexpr unsigned NUM_SHOTS = 1024;
 int main() {
     using namespace cqq;
 
-    QuantumSimulator simulator(12);
-    Circuit circuit = CompilerQASM::compile_circuit("sample_circuits/hardware_ansatz_12.qasm");
+    QuantumSimulator simulator(2);
+    Circuit circuit = CompilerQASM::compile_circuit("sample_circuits/bell_state.qasm");
 
     // Alternatively, you can create a circuit with build operations directly
     // Circuit circuit(2, 2);
@@ -24,11 +24,11 @@ int main() {
     // circuit.print_circuit();
 
     auto start_time = std::chrono::high_resolution_clock::now();
-    auto result = simulator.execute(circuit, num_shots);
+    auto result = simulator.execute(circuit, NUM_SHOTS);
     auto end_time = std::chrono::high_resolution_clock::now();
 
     std::chrono::duration<double> elapsed = end_time - start_time;
-    std::cout << "Execution time for " << num_shots << " shots: " << elapsed.count() << std::endl;
+    std::cout << "Execution time for " << NUM_SHOTS << " shots: " << elapsed.count() << std::endl;
 
     std::cout << "Measurement histogram:" << std::endl;
     for (const auto& [outcome, count] : result) {
