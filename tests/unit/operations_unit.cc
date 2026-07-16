@@ -296,16 +296,12 @@ TEST(OperationsUnit, MeasureOnTwoQubits) {
 }
 
 TEST(OperationsUnit, MeasureOnThreeQubits) {
-    cqq::QStateVector state = {
-        std::complex<double>(1.0 / std::sqrt(2.0), 0.0), // index 0 (|000>)
-        std::complex<double>(0.0, 0.0),
-        std::complex<double>(0.0, 0.0),
+    cqq::QStateVector state = {std::complex<double>(1.0 / std::sqrt(2.0), 0.0), // index 0 (|000>)
+        std::complex<double>(0.0, 0.0), std::complex<double>(0.0, 0.0),
         std::complex<double>(0.0, 0.0),
         std::complex<double>(1.0 / std::sqrt(2.0), 0.0), // index 4 (|100>)
-        std::complex<double>(0.0, 0.0),
-        std::complex<double>(0.0, 0.0),
-        std::complex<double>(0.0, 0.0)
-    };
+        std::complex<double>(0.0, 0.0), std::complex<double>(0.0, 0.0),
+        std::complex<double>(0.0, 0.0)};
     unsigned creg;
 
     cqq::measure(state, 2, creg);

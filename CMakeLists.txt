@@ -66,7 +66,11 @@ target_link_libraries(cqq_e2e_tests PRIVATE cqq_lib GTest::gtest_main)
 gtest_discover_tests(cqq_e2e_tests)
 
 add_executable(cqq_unit_tests
-  tests/unit/operations_unit.cc)
+  tests/unit/circuit_unit.cc
+  tests/unit/compiler_qasm_unit.cc
+  tests/unit/operations_unit.cc
+  tests/unit/simulator_unit.cc
+  tests/unit/states_unit.cc)
 target_link_libraries(cqq_unit_tests PRIVATE cqq_lib GTest::gtest_main)
 gtest_discover_tests(cqq_unit_tests)
 
