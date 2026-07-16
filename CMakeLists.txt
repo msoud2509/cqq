@@ -22,10 +22,11 @@ if(CLANG_FORMAT)
         "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cc"
         "${CMAKE_CURRENT_SOURCE_DIR}/include/*.h"
         "${CMAKE_CURRENT_SOURCE_DIR}/main.cc"
-        "${CMAKE_CURRENT_SOURCE_DIR}/tests/*.h"
-        "${CMAKE_CURRENT_SOURCE_DIR}/tests/*.cc"
+        "${CMAKE_CURRENT_SOURCE_DIR}/tests/*/*.h"
+        "${CMAKE_CURRENT_SOURCE_DIR}/tests/*/*.cc"
         "${CMAKE_CURRENT_SOURCE_DIR}/benchmarks/*.cc"
         "${CMAKE_CURRENT_SOURCE_DIR}/benchmarks/*.h"
+        "${CMAKE_CURRENT_SOURCE_DIR}/main.cc"
     )
 
     add_custom_target(format
@@ -63,6 +64,15 @@ target_compile_definitions(cqq_e2e_tests PRIVATE
   CQQ_SAMPLE_CIRCUITS_DIR="${CMAKE_CURRENT_SOURCE_DIR}/sample_circuits")
 target_link_libraries(cqq_e2e_tests PRIVATE cqq_lib GTest::gtest_main)
 gtest_discover_tests(cqq_e2e_tests)
+
+add_executable(cqq_unit_tests
+  tests/unit/circuit_unit.cc
+  tests/unit/compiler_qasm_unit.cc
+  tests/unit/operations_unit.cc
+  tests/unit/simulator_unit.cc
+  tests/unit/states_unit.cc)
+target_link_libraries(cqq_unit_tests PRIVATE cqq_lib GTest::gtest_main)
+gtest_discover_tests(cqq_unit_tests)
 
 add_executable(cqq_benchmarks benchmarks/bm_simulation.cc)
 target_include_directories(cqq_benchmarks PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/benchmarks)
