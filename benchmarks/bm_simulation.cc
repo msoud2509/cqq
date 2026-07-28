@@ -30,3 +30,12 @@ BENCHMARK(BM_Simulation)
     ->Args({16, 16, 100, 1024, 1337})
     ->Args({16, 16, 150, 1024, 5050})
     ->Args({16, 16, 200, 1024, 413});
+
+// Threading investigation
+BENCHMARK(BM_Simulation)
+    ->Args({16, 16, 150, 1024, 5050})
+    ->Threads(1)
+    ->Threads(2)
+    ->Threads(4)
+    ->Threads(8)
+    ->Threads(16);
