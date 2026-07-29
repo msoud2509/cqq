@@ -27,6 +27,8 @@ static void BM_Simulation(benchmark::State& state) {
 BENCHMARK(BM_Simulation)
     ->Args({8, 8, 100, 1024, 42})
     ->Args({8, 8, 150, 1024, 100})
-    ->Args({16, 16, 100, 1024, 1337})
-    ->Args({16, 16, 150, 1024, 5050})
-    ->Args({16, 16, 200, 1024, 413});
+    ->Args({12, 12, 100, 1024, 1337})
+    ->Args({12, 12, 150, 1024, 5050})
+    ->Args({12, 12, 200, 1024, 413});
+
+BENCHMARK_MAIN();
