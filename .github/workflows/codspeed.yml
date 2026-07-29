@@ -17,7 +17,7 @@ permissions:
   id-token: write
 
 jobs:
-  benchmarks:
+  run-benchmark:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

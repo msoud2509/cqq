@@ -31,5 +31,4 @@ BENCHMARK(BM_Simulation)
     ->Args({12, 12, 150, 1024, 5050})
     ->Args({12, 12, 200, 1024, 413});
 
-
 BENCHMARK_MAIN();
