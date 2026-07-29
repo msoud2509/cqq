@@ -32,4 +32,20 @@ You can also run the test binary directly:
 ./build/cqq_e2e_tests && ./build/cqq_unit_tests
 ```
 
-**NOTE:** To see benchmark usage and results, see [`BENCHMARKS.md`](BENCHMARKS.md).
+## Performance Benchmarking
+This project uses CodSpeed to track performance, to setup CodSpeed:
+
+1. Install the [CodSpeed CLI](https://codspeed.io/docs/cli) 
+
+2. Create a free [CodSpeed account](https://app.codspeed.io/login?flow=get-started)
+
+3. To authenticate with the CLI, run:
+```bash
+codspeed auth login
+```
+
+Then to run the benchmarks, build the benchmark target and run the binary:
+```bash
+cmake --build build --target cqq_benchmarks
+codspeed exec --mode simulation ./build/cqq_benchmarks
+```
