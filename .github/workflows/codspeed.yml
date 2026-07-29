@@ -1,0 +1,33 @@
+name: CodSpeed Benchmarking
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+    paths:
+      - "src/**"
+      - "include/**"
+      - "benchmarks/**"
+      - "CMakeLists.txt"
+
+permissions:
+  pull-requests: write
+  contents: read
+  id-token: write
+
+jobs:
+  benchmarks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Build Benchmarks
+        run: |
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+          cmake --build build --target cqq_benchmarks
+
+      - name: Run CodSpeed
+        uses: CodSpeedHQ/action@v3
+        with:
+          run: ./build/cqq_benchmarks
