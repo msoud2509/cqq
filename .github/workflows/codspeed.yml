@@ -30,4 +30,4 @@ jobs:
       - name: Run CodSpeed
         uses: CodSpeedHQ/action@v3
         with:
-          run: ./build/cqq_benchmarks
+          run: codspeed exec --mode simulation ./build/cqq_benchmarks
