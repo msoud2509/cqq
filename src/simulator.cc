@@ -27,7 +27,9 @@ std::unordered_map<unsigned, unsigned> QuantumSimulator::execute(
         std::vector<unsigned> cregs(num_cregs, 0);
 
         for (const Operation& op : circuit.get_operations()) {
-            auto gate_processor = [this](const Gate& gate) {
+            switch (op.index()) {
+            case 0: { // Gate
+                const auto& gate = std::get<Gate>(op);
                 switch (gate.type) {
                 case GateType::H:
                     apply_hadamard(qstate, gate.targets[0]);
@@ -50,13 +52,17 @@ std::unordered_map<unsigned, unsigned> QuantumSimulator::execute(
                 default:
                     throw std::invalid_argument("Error: Unknown gate type.");
                 }
-            };
-
-            auto measurement_processor = [this, &cregs](const Measurement& meas) {
+                break;
+            }
+            case 1: { // Measurement
+                const auto& meas = std::get<Measurement>(op);
                 measure(qstate, meas.qreg, cregs[meas.creg]);
-            };
-
-            std::visit(overloaded{gate_processor, measurement_processor}, op);
+                break;
+            }
+            default: {
+                throw std::invalid_argument("Error: Unknown operation type.");
+            }
+            }
         }
 
         unsigned measurement_result = 0;
