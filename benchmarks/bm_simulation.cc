@@ -28,10 +28,10 @@ static void BM_Simulation(benchmark::State& state) {
 // while 1024 shots are standard for quantum computing experiments, we are using codspeed for
 // benchmarking, so this drastically reduced the simulation time
 BENCHMARK(BM_Simulation)
-    ->Args({8, 8, 100, 16, 42})
-    ->Args({8, 8, 150, 16, 100})
-    ->Args({12, 12, 100, 16, 1337})
-    ->Args({12, 12, 150, 16, 5050})
-    ->Args({12, 12, 200, 16, 413});
+    ->Args({12, 12, 100, 1, 42})
+    ->Args({12, 12, 150, 1, 100})
+    ->Args({16, 16, 100, 1, 1337})
+    ->Args({18, 18, 100, 1, 5050})
+    ->Args({20, 20, 100, 1, 413});
 
 BENCHMARK_MAIN();
