@@ -3,6 +3,11 @@ name: CodSpeed Benchmarking
 on:
   push:
     branches: [ "main" ]
+    paths:
+      - "src/**"
+      - "include/**"
+      - "benchmarks/**"
+      - "CMakeLists.txt"
   pull_request:
     branches: [ "main" ]
     paths:
