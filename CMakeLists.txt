@@ -8,7 +8,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 # O3 optimizations are enabled by default in Release mode
-add_compile_options(-Wall -Wextra -pedantic -march=native)
+add_compile_options(-Wall -Wextra -pedantic)
 
 file(GLOB_RECURSE SRC_FILES "src/*.cc")
 add_library(cqq_lib SHARED ${SRC_FILES})
