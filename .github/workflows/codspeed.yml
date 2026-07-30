@@ -17,17 +17,18 @@ permissions:
   id-token: write
 
 jobs:
-  benchmarks:
+  run-benchmark:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       
       - name: Build Benchmarks
         run: |
-          cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+          cmake -S . -B build -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCODSPEED_MODE=simulation
           cmake --build build --target cqq_benchmarks
 
       - name: Run CodSpeed
-        uses: CodSpeedHQ/action@v3
+        uses: CodSpeedHQ/action@v4
         with:
+          mode: simulation
           run: ./build/cqq_benchmarks

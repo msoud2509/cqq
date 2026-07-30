@@ -46,6 +46,7 @@ codspeed auth login
 
 Then to run the benchmarks, build the benchmark target and run the binary:
 ```bash
+cmake -S . -B build -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCODSPEED_MODE=simulation
 cmake --build build --target cqq_benchmarks
 codspeed exec --mode simulation ./build/cqq_benchmarks
 ```
