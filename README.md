@@ -2,6 +2,8 @@
 
 A C++(20) project for compiling and simulating quantum circuits. 
 
+[![CodSpeed Badge](https://img.shields.io/endpoint?url=https://app.codspeed.io//badge.json)](https://app.codspeed.io//msoud2509/cqq?utm_source=badge)
+
 ## Usage
 To create the build system, run:
 ```bash
