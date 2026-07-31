@@ -5,6 +5,7 @@
 
 using namespace cqq;
 
+template<typename Precision>
 static void BM_Simulation(benchmark::State& state) {
     const unsigned num_qubits = static_cast<unsigned>(state.range(0));
     const unsigned num_cregs = static_cast<unsigned>(state.range(1));
@@ -14,7 +15,7 @@ static void BM_Simulation(benchmark::State& state) {
 
     Circuit circuit =
         benchmarks::generate_random_qasm_circuit(num_qubits, num_cregs, num_gates, seed);
-    QuantumSimulator<float> simulator(num_qubits);
+    QuantumSimulator<Precision> simulator(num_qubits);
 
     // actual benchmarking loop
     for (auto _ : state) {
@@ -27,11 +28,20 @@ static void BM_Simulation(benchmark::State& state) {
 
 // while 1024 shots are standard for quantum computing experiments, we are using codspeed for
 // benchmarking which makes consistent simulations, so this drastically reduced the simulation time
-BENCHMARK(BM_Simulation)
+BENCHMARK_TEMPLATE(BM_Simulation, float)
     ->Args({12, 12, 100, 1, 42})
     ->Args({12, 12, 150, 1, 100})
     ->Args({16, 16, 100, 1, 1337})
     ->Args({18, 18, 100, 1, 5050})
-    ->Args({20, 20, 100, 1, 413});
+    ->Args({20, 20, 100, 1, 413})
+    ->Args({22, 22, 100, 1, 2019});
+
+BENCHMARK_TEMPLATE(BM_Simulation, double)
+    ->Args({8, 8, 100, 1, 42})
+    ->Args({8, 8, 150, 1, 100})
+    ->Args({8, 8, 200, 1, 1337})
+    ->Args({12, 12, 100, 1, 1337})
+    ->Args({12, 12, 150, 1, 5050})
+    ->Args({12, 12, 200, 1, 2018});
 
 BENCHMARK_MAIN();
