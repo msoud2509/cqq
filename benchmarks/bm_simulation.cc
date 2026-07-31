@@ -51,7 +51,7 @@ BENCHMARK_TEMPLATE(BM_Simulation, double)
     ->Args({16, 16, 100, 1, 120})
     ->Args({16, 16, 150, 1, 120})
     ->Args({16, 16, 200, 1, 121})
-    ->Args({18, 18, 150, 1, 122})
+    ->Args({18, 18, 50, 1, 122})
     ->Args({20, 20, 20, 1, 123});
 
 BENCHMARK_MAIN();
