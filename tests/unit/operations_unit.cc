@@ -13,8 +13,8 @@ cqq::QStateVector<double> basis_state(size_t num_qubits, size_t basis_index) {
     return state;
 }
 
-void expect_state_near(
-    const cqq::QStateVector<double>& actual, const cqq::QStateVector<double>& expected, double tolerance = 1e-12) {
+void expect_state_near(const cqq::QStateVector<double>& actual,
+    const cqq::QStateVector<double>& expected, double tolerance = 1e-12) {
     ASSERT_EQ(actual.size(), expected.size());
 
     for (size_t i = 0; i < actual.size(); ++i) {
@@ -25,10 +25,14 @@ void expect_state_near(
 
 } // namespace
 
+template <typename Precision> class OperationsTypedTest : public ::testing::Test {};
+using OperationsTestTypes = ::testing::Types<double, float>;
+TYPED_TEST_SUITE(OperationsTypedTest, OperationsTestTypes);
+
 ////////////////////////////////
 // Hadamard Gate Tests
 ////////////////////////////////
-TEST(OperationsUnit, HadamardMapsZeroToPlusState) {
+TYPED_TEST(OperationsTypedTest, HadamardMapsZeroToPlusState) {
     auto state = basis_state(1, 0);
 
     cqq::apply_hadamard(state, 0);
@@ -40,7 +44,7 @@ TEST(OperationsUnit, HadamardMapsZeroToPlusState) {
     expect_state_near(state, expected);
 }
 
-TEST(OperationsUnit, HadamardIsItsOwnInverse) {
+TYPED_TEST(OperationsTypedTest, HadamardIsItsOwnInverse) {
     auto state = basis_state(1, 0);
 
     cqq::apply_hadamard(state, 0);
@@ -49,7 +53,7 @@ TEST(OperationsUnit, HadamardIsItsOwnInverse) {
     expect_state_near(state, basis_state(1, 0));
 }
 
-TEST(OperationsUnit, HadamardOnTwoQubits) {
+TYPED_TEST(OperationsTypedTest, HadamardOnTwoQubits) {
     auto state = basis_state(2, 0);
 
     cqq::apply_hadamard(state, 0);
@@ -64,7 +68,7 @@ TEST(OperationsUnit, HadamardOnTwoQubits) {
     expect_state_near(state, expected);
 }
 
-TEST(OperationsUnit, HadamardOnOneQubitInTwoQubitSystem) {
+TYPED_TEST(OperationsTypedTest, HadamardOnOneQubitInTwoQubitSystem) {
     auto state = basis_state(2, 0);
 
     cqq::apply_hadamard(state, 1);
@@ -80,7 +84,7 @@ TEST(OperationsUnit, HadamardOnOneQubitInTwoQubitSystem) {
 ////////////////////////////////
 // Pauli-X Gate Tests
 ////////////////////////////////
-TEST(OperationsUnit, PauliXMapsZeroToOne) {
+TYPED_TEST(OperationsTypedTest, PauliXMapsZeroToOne) {
     auto state = basis_state(1, 0);
 
     cqq::apply_pauli_x(state, 0);
@@ -88,7 +92,7 @@ TEST(OperationsUnit, PauliXMapsZeroToOne) {
     expect_state_near(state, basis_state(1, 1));
 }
 
-TEST(OperationsUnit, PauliXIsItsOwnInverse) {
+TYPED_TEST(OperationsTypedTest, PauliXIsItsOwnInverse) {
     auto state = basis_state(1, 0);
 
     cqq::apply_pauli_x(state, 0);
@@ -97,7 +101,7 @@ TEST(OperationsUnit, PauliXIsItsOwnInverse) {
     expect_state_near(state, basis_state(1, 0));
 }
 
-TEST(OperationsUnit, PauliXOnTwoQubits) {
+TYPED_TEST(OperationsTypedTest, PauliXOnTwoQubits) {
     auto state = basis_state(2, 0);
 
     cqq::apply_pauli_x(state, 0);
@@ -109,7 +113,7 @@ TEST(OperationsUnit, PauliXOnTwoQubits) {
 ////////////////////////////////
 // Pauli-Z Gate Tests
 ////////////////////////////////
-TEST(OperationsUnit, PauliZMapsOneToNegativeOne) {
+TYPED_TEST(OperationsTypedTest, PauliZMapsOneToNegativeOne) {
     auto state = basis_state(1, 1);
 
     cqq::apply_pauli_z(state, 0);
@@ -119,7 +123,7 @@ TEST(OperationsUnit, PauliZMapsOneToNegativeOne) {
     expect_state_near(state, expected);
 }
 
-TEST(OperationsUnit, PauliZDoesNotAffectZero) {
+TYPED_TEST(OperationsTypedTest, PauliZDoesNotAffectZero) {
     auto state = basis_state(1, 0);
 
     cqq::apply_pauli_z(state, 0);
@@ -127,7 +131,7 @@ TEST(OperationsUnit, PauliZDoesNotAffectZero) {
     expect_state_near(state, basis_state(1, 0));
 }
 
-TEST(OperationsUnit, PauliZIsItsOwnInverse) {
+TYPED_TEST(OperationsTypedTest, PauliZIsItsOwnInverse) {
     auto state = basis_state(1, 1);
 
     cqq::apply_pauli_z(state, 0);
@@ -136,7 +140,7 @@ TEST(OperationsUnit, PauliZIsItsOwnInverse) {
     expect_state_near(state, basis_state(1, 1));
 }
 
-TEST(OperationsUnit, PauliZOnTwoQubits) {
+TYPED_TEST(OperationsTypedTest, PauliZOnTwoQubits) {
     auto state = basis_state(2, 3);
 
     cqq::apply_pauli_z(state, 0);
@@ -151,7 +155,7 @@ TEST(OperationsUnit, PauliZOnTwoQubits) {
 ////////////////////////////////
 // Pauli-Y Gate Tests
 ////////////////////////////////
-TEST(OperationsUnit, PauliYMapsZeroToI) {
+TYPED_TEST(OperationsTypedTest, PauliYMapsZeroToI) {
     auto state = basis_state(1, 0);
 
     cqq::apply_pauli_y(state, 0);
@@ -161,7 +165,7 @@ TEST(OperationsUnit, PauliYMapsZeroToI) {
     expect_state_near(state, expected);
 }
 
-TEST(OperationsUnit, PauliYMapsOneToNegativeI) {
+TYPED_TEST(OperationsTypedTest, PauliYMapsOneToNegativeI) {
     auto state = basis_state(1, 1);
 
     cqq::apply_pauli_y(state, 0);
@@ -171,7 +175,7 @@ TEST(OperationsUnit, PauliYMapsOneToNegativeI) {
     expect_state_near(state, expected);
 }
 
-TEST(OperationsUnit, PauliYIsItsOwnInverse) {
+TYPED_TEST(OperationsTypedTest, PauliYIsItsOwnInverse) {
     auto state = basis_state(1, 0);
 
     cqq::apply_pauli_y(state, 0);
@@ -183,7 +187,7 @@ TEST(OperationsUnit, PauliYIsItsOwnInverse) {
 ////////////////////////////////
 // SWAP Gate Tests
 ////////////////////////////////
-TEST(OperationsUnit, SwapSwapsTwoQubits) {
+TYPED_TEST(OperationsTypedTest, SwapSwapsTwoQubits) {
     auto state = basis_state(2, 1); // origingally set to |01>
 
     cqq::apply_swap(state, 0, 1);
@@ -191,7 +195,7 @@ TEST(OperationsUnit, SwapSwapsTwoQubits) {
     expect_state_near(state, basis_state(2, 2)); // |10>
 }
 
-TEST(OperationsUnit, SwapIsItsOwnInverse) {
+TYPED_TEST(OperationsTypedTest, SwapIsItsOwnInverse) {
     auto state = basis_state(2, 1); // |01>
 
     cqq::apply_swap(state, 0, 1);
@@ -200,7 +204,7 @@ TEST(OperationsUnit, SwapIsItsOwnInverse) {
     expect_state_near(state, basis_state(2, 1)); // |01>
 }
 
-TEST(OperationsUnit, SwapOnTwoQubits) {
+TYPED_TEST(OperationsTypedTest, SwapOnTwoQubits) {
     auto state = basis_state(2, 0); // |00>
 
     cqq::apply_swap(state, 0, 1);
@@ -208,7 +212,7 @@ TEST(OperationsUnit, SwapOnTwoQubits) {
     expect_state_near(state, basis_state(2, 0)); // |00>
 }
 
-TEST(OperationsUnit, SwapOnThreeQubits) {
+TYPED_TEST(OperationsTypedTest, SwapOnThreeQubits) {
     auto state = basis_state(3, 1); // |001>
 
     cqq::apply_swap(state, 0, 2);
@@ -219,7 +223,7 @@ TEST(OperationsUnit, SwapOnThreeQubits) {
 ////////////////////////////////
 // CNOT Gate Tests
 ////////////////////////////////
-TEST(OperationsUnit, CNOTFlipsTargetWhenControlIsOne) {
+TYPED_TEST(OperationsTypedTest, CNOTFlipsTargetWhenControlIsOne) {
     auto state = basis_state(2, 3); // |11>
 
     cqq::apply_controlled_not(state, 0, 1);
@@ -227,7 +231,7 @@ TEST(OperationsUnit, CNOTFlipsTargetWhenControlIsOne) {
     expect_state_near(state, basis_state(2, 1)); // |10>
 }
 
-TEST(OperationsUnit, CNOTDoesNotFlipTargetWhenControlIsZero) {
+TYPED_TEST(OperationsTypedTest, CNOTDoesNotFlipTargetWhenControlIsZero) {
     auto state = basis_state(2, 1); // |01>
 
     cqq::apply_controlled_not(state, 1, 0);
@@ -235,7 +239,7 @@ TEST(OperationsUnit, CNOTDoesNotFlipTargetWhenControlIsZero) {
     expect_state_near(state, basis_state(2, 1)); // |01>
 }
 
-TEST(OperationsUnit, CNOTIsItsOwnInverse) {
+TYPED_TEST(OperationsTypedTest, CNOTIsItsOwnInverse) {
     auto state = basis_state(2, 3); // |11>
 
     cqq::apply_controlled_not(state, 0, 1);
@@ -247,7 +251,7 @@ TEST(OperationsUnit, CNOTIsItsOwnInverse) {
 ////////////////////////////////
 // Measurement Tests
 ////////////////////////////////
-TEST(OperationsUnit, MeasureCollapsesStateToBasisState) {
+TYPED_TEST(OperationsTypedTest, MeasureCollapsesStateToBasisState) {
     auto state = basis_state(1, 0);
     unsigned creg;
 
@@ -257,7 +261,7 @@ TEST(OperationsUnit, MeasureCollapsesStateToBasisState) {
     expect_state_near(state, basis_state(1, 0));
 }
 
-TEST(OperationsUnit, MeasureCollapsesSuperpositionToBasisState) {
+TYPED_TEST(OperationsTypedTest, MeasureCollapsesSuperpositionToBasisState) {
     cqq::QStateVector<> state = {std::complex<double>(1.0 / std::sqrt(2.0), 0.0),
         std::complex<double>(1.0 / std::sqrt(2.0), 0.0)};
     unsigned creg;
@@ -272,14 +276,14 @@ TEST(OperationsUnit, MeasureCollapsesSuperpositionToBasisState) {
     }
 }
 
-TEST(OperationsUnit, MeasureThrowsOnInvalidQubitIndex) {
+TYPED_TEST(OperationsTypedTest, MeasureThrowsOnInvalidQubitIndex) {
     auto state = basis_state(1, 0);
     unsigned creg;
 
     EXPECT_THROW(cqq::measure(state, 1, creg), std::invalid_argument);
 }
 
-TEST(OperationsUnit, MeasureOnTwoQubits) {
+TYPED_TEST(OperationsTypedTest, MeasureOnTwoQubits) {
     cqq::QStateVector<> state = {std::complex<double>(1.0 / std::sqrt(2.0), 0.0),
         std::complex<double>(1.0 / std::sqrt(2.0), 0.0), std::complex<double>(0.0, 0.0),
         std::complex<double>(0.0, 0.0)};
@@ -295,7 +299,7 @@ TEST(OperationsUnit, MeasureOnTwoQubits) {
     }
 }
 
-TEST(OperationsUnit, MeasureOnThreeQubits) {
+TYPED_TEST(OperationsTypedTest, MeasureOnThreeQubits) {
     cqq::QStateVector<> state = {std::complex<double>(1.0 / std::sqrt(2.0), 0.0), // index 0 (|000>)
         std::complex<double>(0.0, 0.0), std::complex<double>(0.0, 0.0),
         std::complex<double>(0.0, 0.0),

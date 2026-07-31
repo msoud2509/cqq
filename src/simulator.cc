@@ -9,13 +9,13 @@
 
 namespace cqq {
 
-template<typename Precision>
+template <typename Precision>
 QuantumSimulator<Precision>::QuantumSimulator(unsigned num_qubits)
     : num_qubits(num_qubits), qstate(1ULL << num_qubits) {
     reset();
 }
 
-template<typename Precision>
+template <typename Precision>
 std::unordered_map<unsigned, unsigned> QuantumSimulator<Precision>::execute(
     const Circuit& circuit, unsigned shots) {
     if (circuit.get_num_qregs() > num_qubits) {
@@ -73,14 +73,12 @@ std::unordered_map<unsigned, unsigned> QuantumSimulator<Precision>::execute(
     return measurement_counts;
 }
 
-template<typename Precision>
-void QuantumSimulator<Precision>::reset() {
+template <typename Precision> void QuantumSimulator<Precision>::reset() {
     std::fill(qstate.begin(), qstate.end(), std::complex<Precision>(0.0, 0.0));
     qstate[0] = {1.0, 0.0};
 }
 
-template<typename Precision>
-void QuantumSimulator<Precision>::print_state() const {
+template <typename Precision> void QuantumSimulator<Precision>::print_state() const {
     for (size_t i = 0; i < qstate.size(); ++i) {
         std::string bits;
         bits.reserve(num_qubits);

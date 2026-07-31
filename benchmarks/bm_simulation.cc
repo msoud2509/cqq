@@ -5,8 +5,7 @@
 
 using namespace cqq;
 
-template<typename Precision>
-static void BM_Simulation(benchmark::State& state) {
+template <typename Precision> static void BM_Simulation(benchmark::State& state) {
     const unsigned num_qubits = static_cast<unsigned>(state.range(0));
     const unsigned num_cregs = static_cast<unsigned>(state.range(1));
     const unsigned num_gates = static_cast<unsigned>(state.range(2));

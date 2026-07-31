@@ -17,7 +17,11 @@ unsigned total_counts(const std::unordered_map<unsigned, unsigned>& counts) {
 
 } // namespace
 
-TEST(SimulatorUnit, ExecuteSingleMeasurementOnZeroState) {
+template <typename Precision> class SimulatorTypedTest : public ::testing::Test {};
+using SimulatorTestTypes = ::testing::Types<double, float>;
+TYPED_TEST_SUITE(SimulatorTypedTest, SimulatorTestTypes);
+
+TYPED_TEST(SimulatorTypedTest, ExecuteSingleMeasurementOnZeroState) {
     cqq::Circuit circuit(1, 1);
     circuit.add_measurement(0, 0);
 
@@ -29,7 +33,7 @@ TEST(SimulatorUnit, ExecuteSingleMeasurementOnZeroState) {
     EXPECT_EQ(counts.at(0u), 32u);
 }
 
-TEST(SimulatorUnit, ExecuteXThenMeasureAlwaysReturnsOne) {
+TYPED_TEST(SimulatorTypedTest, ExecuteXThenMeasureAlwaysReturnsOne) {
     cqq::Circuit circuit(1, 1);
     circuit.add_gate(cqq::GateType::X, {0});
     circuit.add_measurement(0, 0);
@@ -42,7 +46,7 @@ TEST(SimulatorUnit, ExecuteXThenMeasureAlwaysReturnsOne) {
     EXPECT_EQ(counts.at(1u), 32u);
 }
 
-TEST(SimulatorUnit, ExecuteHadamardThenMeasureProducesValidOutcomes) {
+TYPED_TEST(SimulatorTypedTest, ExecuteHadamardThenMeasureProducesValidOutcomes) {
     cqq::Circuit circuit(1, 1);
     circuit.add_gate(cqq::GateType::H, {0});
     circuit.add_measurement(0, 0);
@@ -57,7 +61,7 @@ TEST(SimulatorUnit, ExecuteHadamardThenMeasureProducesValidOutcomes) {
     }
 }
 
-TEST(SimulatorUnit, ThrowsWhenCircuitNeedsMoreQubitsThanSimulator) {
+TYPED_TEST(SimulatorTypedTest, ThrowsWhenCircuitNeedsMoreQubitsThanSimulator) {
     cqq::Circuit circuit(2, 1);
     circuit.add_measurement(0, 0);
 
@@ -65,7 +69,7 @@ TEST(SimulatorUnit, ThrowsWhenCircuitNeedsMoreQubitsThanSimulator) {
     EXPECT_THROW(simulator.execute(circuit, 1), std::invalid_argument);
 }
 
-TEST(SimulatorUnit, ResetRestoresZeroStateAfterXExecution) {
+TYPED_TEST(SimulatorTypedTest, ResetRestoresZeroStateAfterXExecution) {
     cqq::Circuit prepare_one_and_measure(1, 1);
     prepare_one_and_measure.add_gate(cqq::GateType::X, {0});
     prepare_one_and_measure.add_measurement(0, 0);
@@ -85,7 +89,7 @@ TEST(SimulatorUnit, ResetRestoresZeroStateAfterXExecution) {
     EXPECT_EQ(zero_counts.at(0u), 16u);
 }
 
-TEST(SimulatorUnit, ResetRestoresZeroStateAfterSuperpositionExecution) {
+TYPED_TEST(SimulatorTypedTest, ResetRestoresZeroStateAfterSuperpositionExecution) {
     cqq::Circuit hadamard_then_measure(1, 1);
     hadamard_then_measure.add_gate(cqq::GateType::H, {0});
     hadamard_then_measure.add_measurement(0, 0);
@@ -103,3 +107,5 @@ TEST(SimulatorUnit, ResetRestoresZeroStateAfterSuperpositionExecution) {
     ASSERT_EQ(zero_counts.size(), 1u);
     EXPECT_EQ(zero_counts.at(0u), 32u);
 }
+
+// floats

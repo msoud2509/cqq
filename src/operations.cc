@@ -10,7 +10,7 @@
 
 namespace cqq {
 
-template<typename Precision>
+template <typename Precision>
 void apply_hadamard(QStateVector<Precision>& qstate, unsigned target) {
     const auto mask = bit_mask(target);
     const auto inv_sqrt2 = static_cast<Precision>((1.0) / std::sqrt(2.0));
@@ -26,8 +26,7 @@ void apply_hadamard(QStateVector<Precision>& qstate, unsigned target) {
     }
 }
 
-template<typename Precision>
-void apply_pauli_x(QStateVector<Precision>& qstate, unsigned target) {
+template <typename Precision> void apply_pauli_x(QStateVector<Precision>& qstate, unsigned target) {
     const auto mask = bit_mask(target);
 
     for (size_t i = 0; i < qstate.size(); ++i) {
@@ -38,8 +37,7 @@ void apply_pauli_x(QStateVector<Precision>& qstate, unsigned target) {
     }
 }
 
-template<typename Precision>
-void apply_pauli_y(QStateVector<Precision>& qstate, unsigned target) {
+template <typename Precision> void apply_pauli_y(QStateVector<Precision>& qstate, unsigned target) {
     const auto mask = bit_mask(target);
 
     for (size_t i = 0; i < qstate.size(); ++i) {
@@ -53,8 +51,7 @@ void apply_pauli_y(QStateVector<Precision>& qstate, unsigned target) {
     }
 }
 
-template<typename Precision>
-void apply_pauli_z(QStateVector<Precision>& qstate, unsigned target) {
+template <typename Precision> void apply_pauli_z(QStateVector<Precision>& qstate, unsigned target) {
     const auto mask = bit_mask(target);
 
     for (size_t i = 0; i < qstate.size(); ++i) {
@@ -64,7 +61,7 @@ void apply_pauli_z(QStateVector<Precision>& qstate, unsigned target) {
     }
 }
 
-template<typename Precision>
+template <typename Precision>
 void apply_controlled_not(QStateVector<Precision>& qstate, unsigned control, unsigned target) {
     const auto cmask = bit_mask(control);
     const auto tmask = bit_mask(target);
@@ -77,7 +74,7 @@ void apply_controlled_not(QStateVector<Precision>& qstate, unsigned control, uns
     }
 }
 
-template<typename Precision>
+template <typename Precision>
 void apply_swap(QStateVector<Precision>& qstate, unsigned q1, unsigned q2) {
     if (q1 == q2)
         return;
@@ -96,7 +93,7 @@ void apply_swap(QStateVector<Precision>& qstate, unsigned q1, unsigned q2) {
     }
 }
 
-template<typename Precision>
+template <typename Precision>
 void measure(QStateVector<Precision>& qstate, unsigned qubit, unsigned& creg) {
     if (qubit >= num_qubits(qstate)) {
         throw std::invalid_argument("Qubit index out of range.");
