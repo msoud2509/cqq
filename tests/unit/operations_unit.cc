@@ -7,14 +7,14 @@
 
 namespace {
 
-cqq::QStateVector basis_state(size_t num_qubits, size_t basis_index) {
-    cqq::QStateVector state(1ULL << num_qubits, std::complex<double>(0.0, 0.0));
+cqq::QStateVector<double> basis_state(size_t num_qubits, size_t basis_index) {
+    cqq::QStateVector<> state(1ULL << num_qubits, std::complex<double>(0.0, 0.0));
     state[basis_index] = std::complex<double>(1.0, 0.0);
     return state;
 }
 
 void expect_state_near(
-    const cqq::QStateVector& actual, const cqq::QStateVector& expected, double tolerance = 1e-12) {
+    const cqq::QStateVector<double>& actual, const cqq::QStateVector<double>& expected, double tolerance = 1e-12) {
     ASSERT_EQ(actual.size(), expected.size());
 
     for (size_t i = 0; i < actual.size(); ++i) {
@@ -34,7 +34,7 @@ TEST(OperationsUnit, HadamardMapsZeroToPlusState) {
     cqq::apply_hadamard(state, 0);
 
     const auto inv_sqrt2 = 1.0 / std::sqrt(2.0);
-    const cqq::QStateVector expected = {
+    const cqq::QStateVector<> expected = {
         std::complex<double>(inv_sqrt2, 0.0), std::complex<double>(inv_sqrt2, 0.0)};
 
     expect_state_near(state, expected);
@@ -56,7 +56,7 @@ TEST(OperationsUnit, HadamardOnTwoQubits) {
     cqq::apply_hadamard(state, 1);
 
     const auto inv_sqrt2 = 1.0 / std::sqrt(2.0);
-    const cqq::QStateVector expected = {std::complex<double>(inv_sqrt2 * inv_sqrt2, 0.0),
+    const cqq::QStateVector<> expected = {std::complex<double>(inv_sqrt2 * inv_sqrt2, 0.0),
         std::complex<double>(inv_sqrt2 * inv_sqrt2, 0.0),
         std::complex<double>(inv_sqrt2 * inv_sqrt2, 0.0),
         std::complex<double>(inv_sqrt2 * inv_sqrt2, 0.0)};
@@ -70,7 +70,7 @@ TEST(OperationsUnit, HadamardOnOneQubitInTwoQubitSystem) {
     cqq::apply_hadamard(state, 1);
 
     const auto inv_sqrt2 = 1.0 / std::sqrt(2.0);
-    const cqq::QStateVector expected = {std::complex<double>(inv_sqrt2, 0.0),
+    const cqq::QStateVector<> expected = {std::complex<double>(inv_sqrt2, 0.0),
         std::complex<double>(0.0, 0.0), std::complex<double>(inv_sqrt2, 0.0),
         std::complex<double>(0.0, 0.0)};
 
@@ -114,7 +114,7 @@ TEST(OperationsUnit, PauliZMapsOneToNegativeOne) {
 
     cqq::apply_pauli_z(state, 0);
 
-    const cqq::QStateVector expected = {
+    const cqq::QStateVector<> expected = {
         std::complex<double>(0.0, 0.0), std::complex<double>(-1.0, 0.0)};
     expect_state_near(state, expected);
 }
@@ -142,7 +142,7 @@ TEST(OperationsUnit, PauliZOnTwoQubits) {
     cqq::apply_pauli_z(state, 0);
     cqq::apply_pauli_z(state, 1);
 
-    const cqq::QStateVector expected = {std::complex<double>(0.0, 0.0),
+    const cqq::QStateVector<> expected = {std::complex<double>(0.0, 0.0),
         std::complex<double>(0.0, 0.0), std::complex<double>(0.0, 0.0),
         std::complex<double>(1.0, 0.0)};
     expect_state_near(state, expected);
@@ -156,7 +156,7 @@ TEST(OperationsUnit, PauliYMapsZeroToI) {
 
     cqq::apply_pauli_y(state, 0);
 
-    const cqq::QStateVector expected = {
+    const cqq::QStateVector<> expected = {
         std::complex<double>(0.0, 0.0), std::complex<double>(0.0, 1.0)};
     expect_state_near(state, expected);
 }
@@ -166,7 +166,7 @@ TEST(OperationsUnit, PauliYMapsOneToNegativeI) {
 
     cqq::apply_pauli_y(state, 0);
 
-    const cqq::QStateVector expected = {
+    const cqq::QStateVector<> expected = {
         std::complex<double>(0.0, -1.0), std::complex<double>(0.0, 0.0)};
     expect_state_near(state, expected);
 }
@@ -184,7 +184,7 @@ TEST(OperationsUnit, PauliYIsItsOwnInverse) {
 // SWAP Gate Tests
 ////////////////////////////////
 TEST(OperationsUnit, SwapSwapsTwoQubits) {
-    auto state = basis_state(2, 1); // |01>
+    auto state = basis_state(2, 1); // origingally set to |01>
 
     cqq::apply_swap(state, 0, 1);
 
@@ -258,7 +258,7 @@ TEST(OperationsUnit, MeasureCollapsesStateToBasisState) {
 }
 
 TEST(OperationsUnit, MeasureCollapsesSuperpositionToBasisState) {
-    cqq::QStateVector state = {std::complex<double>(1.0 / std::sqrt(2.0), 0.0),
+    cqq::QStateVector<> state = {std::complex<double>(1.0 / std::sqrt(2.0), 0.0),
         std::complex<double>(1.0 / std::sqrt(2.0), 0.0)};
     unsigned creg;
 
@@ -280,7 +280,7 @@ TEST(OperationsUnit, MeasureThrowsOnInvalidQubitIndex) {
 }
 
 TEST(OperationsUnit, MeasureOnTwoQubits) {
-    cqq::QStateVector state = {std::complex<double>(1.0 / std::sqrt(2.0), 0.0),
+    cqq::QStateVector<> state = {std::complex<double>(1.0 / std::sqrt(2.0), 0.0),
         std::complex<double>(1.0 / std::sqrt(2.0), 0.0), std::complex<double>(0.0, 0.0),
         std::complex<double>(0.0, 0.0)};
     unsigned creg;
@@ -296,7 +296,7 @@ TEST(OperationsUnit, MeasureOnTwoQubits) {
 }
 
 TEST(OperationsUnit, MeasureOnThreeQubits) {
-    cqq::QStateVector state = {std::complex<double>(1.0 / std::sqrt(2.0), 0.0), // index 0 (|000>)
+    cqq::QStateVector<> state = {std::complex<double>(1.0 / std::sqrt(2.0), 0.0), // index 0 (|000>)
         std::complex<double>(0.0, 0.0), std::complex<double>(0.0, 0.0),
         std::complex<double>(0.0, 0.0),
         std::complex<double>(1.0 / std::sqrt(2.0), 0.0), // index 4 (|100>)

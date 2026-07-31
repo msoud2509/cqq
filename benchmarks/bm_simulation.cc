@@ -14,7 +14,7 @@ static void BM_Simulation(benchmark::State& state) {
 
     Circuit circuit =
         benchmarks::generate_random_qasm_circuit(num_qubits, num_cregs, num_gates, seed);
-    QuantumSimulator simulator(num_qubits);
+    QuantumSimulator<float> simulator(num_qubits);
 
     // actual benchmarking loop
     for (auto _ : state) {
@@ -26,7 +26,7 @@ static void BM_Simulation(benchmark::State& state) {
 }
 
 // while 1024 shots are standard for quantum computing experiments, we are using codspeed for
-// benchmarking, so this drastically reduced the simulation time
+// benchmarking which makes consistent simulations, so this drastically reduced the simulation time
 BENCHMARK(BM_Simulation)
     ->Args({12, 12, 100, 1, 42})
     ->Args({12, 12, 150, 1, 100})

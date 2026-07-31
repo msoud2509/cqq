@@ -7,9 +7,11 @@
 
 namespace cqq {
 
-using QStateVector = std::vector<std::complex<double>>;
+template<typename Precision = double>
+using QStateVector = std::vector<std::complex<Precision>>;
 
-inline unsigned num_qubits(const QStateVector& qstate) {
+template<typename Precision = double>
+inline unsigned num_qubits(const QStateVector<Precision>& qstate) {
     return static_cast<unsigned>(std::countr_zero(qstate.size()));
 }
 
