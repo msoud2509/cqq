@@ -29,19 +29,29 @@ static void BM_Simulation(benchmark::State& state) {
 // while 1024 shots are standard for quantum computing experiments, we are using codspeed for
 // benchmarking which makes consistent simulations, so this drastically reduced the simulation time
 BENCHMARK_TEMPLATE(BM_Simulation, float)
-    ->Args({12, 12, 100, 1, 42})
-    ->Args({12, 12, 150, 1, 100})
-    ->Args({16, 16, 100, 1, 1337})
-    ->Args({18, 18, 100, 1, 5050})
-    ->Args({20, 20, 100, 1, 413})
-    ->Args({22, 22, 100, 1, 2019});
+    ->Args({12, 12, 200, 1, 102})
+    ->Args({12, 12, 250, 1, 103})
+    ->Args({12, 12, 300, 1, 104})
+    ->Args({16, 16, 200, 1, 105})
+    ->Args({16, 16, 250, 1, 106})
+    ->Args({16, 16, 300, 1, 107})
+    ->Args({18, 18, 100, 1, 108})
+    ->Args({18, 18, 150, 1, 109})
+    ->Args({18, 18, 200, 1, 110})
+    ->Args({20, 20, 50, 1, 111})
+    ->Args({22, 22, 20, 1, 112});
 
 BENCHMARK_TEMPLATE(BM_Simulation, double)
-    ->Args({8, 8, 100, 1, 42})
-    ->Args({8, 8, 150, 1, 100})
-    ->Args({8, 8, 200, 1, 1337})
-    ->Args({12, 12, 100, 1, 1337})
-    ->Args({12, 12, 150, 1, 5050})
-    ->Args({12, 12, 200, 1, 2018});
+    ->Args({8, 8, 200, 1, 115})
+    ->Args({8, 8, 250, 1, 116})
+    ->Args({8, 8, 300, 1, 117})
+    ->Args({12, 12, 200, 1, 118})
+    ->Args({12, 12, 250, 1, 119})
+    ->Args({12, 12, 300, 1, 120})
+    ->Args({16, 16, 100, 1, 120})
+    ->Args({16, 16, 150, 1, 120})
+    ->Args({16, 16, 200, 1, 121})
+    ->Args({18, 18, 150, 1, 122})
+    ->Args({20, 20, 20, 1, 123});
 
 BENCHMARK_MAIN();
