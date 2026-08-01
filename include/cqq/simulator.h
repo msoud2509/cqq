@@ -9,10 +9,14 @@
 
 namespace cqq {
 
-class QuantumSimulator {
+/**
+ * Simulator class to execute quantum circuits
+ * Acceptable precision types: double (default) and float
+ */
+template <typename Precision = double> class QuantumSimulator {
   private:
     unsigned num_qubits;
-    QStateVector qstate;
+    QStateVector<Precision> qstate;
 
   public:
     QuantumSimulator(unsigned num_qubits);

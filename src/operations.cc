@@ -10,25 +10,22 @@
 
 namespace cqq {
 
-void apply_hadamard(QStateVector& qstate, unsigned target) {
+template <typename Precision>
+void apply_hadamard(QStateVector<Precision>& qstate, unsigned target) {
     const auto mask = bit_mask(target);
-    const auto inv_sqrt2 = 1.0 / std::sqrt(2.0);
+    const auto inv_sqrt2 = static_cast<Precision>((1.0) / std::sqrt(2.0));
 
     for (size_t i = 0; i < qstate.size(); ++i) {
         if ((i & mask) == 0) {
             size_t j = i | mask;
 
-            std::complex<double> temp = qstate[i];
+            std::complex<Precision> temp = qstate[i];
             qstate[i] = (temp + qstate[j]) * inv_sqrt2;
             qstate[j] = (temp - qstate[j]) * inv_sqrt2;
         }
     }
 }
 
-<<<<<<< Updated upstream
-void apply_pauli_x(QStateVector& qstate, unsigned target) {
-    const auto mask = bit_mask(target);
-=======
 template <typename Precision> void apply_pauli_x(QStateVector<Precision>& qstate, unsigned target) {
     const size_t block_size = size_t(1) << target;
     const size_t num_blocks = qstate.size() / (block_size * 2);
@@ -39,28 +36,27 @@ template <typename Precision> void apply_pauli_x(QStateVector<Precision>& qstate
         for (size_t low = 0; low < block_size; ++low) {
             size_t i = high | low;
             size_t j = i | block_size;
->>>>>>> Stashed changes
 
             std::swap(qstate[i], qstate[j]);
         }
     }
 }
 
-void apply_pauli_y(QStateVector& qstate, unsigned target) {
+template <typename Precision> void apply_pauli_y(QStateVector<Precision>& qstate, unsigned target) {
     const auto mask = bit_mask(target);
 
     for (size_t i = 0; i < qstate.size(); ++i) {
         if ((i & mask) == 0) {
             size_t j = i | mask;
 
-            std::complex<double> temp = qstate[i];
-            qstate[i] = std::complex<double>(0, -1) * qstate[j];
-            qstate[j] = std::complex<double>(0, 1) * temp;
+            std::complex<Precision> temp = qstate[i];
+            qstate[i] = std::complex<Precision>(0, -1) * qstate[j];
+            qstate[j] = std::complex<Precision>(0, 1) * temp;
         }
     }
 }
 
-void apply_pauli_z(QStateVector& qstate, unsigned target) {
+template <typename Precision> void apply_pauli_z(QStateVector<Precision>& qstate, unsigned target) {
     const auto mask = bit_mask(target);
 
     for (size_t i = 0; i < qstate.size(); ++i) {
@@ -70,7 +66,8 @@ void apply_pauli_z(QStateVector& qstate, unsigned target) {
     }
 }
 
-void apply_controlled_not(QStateVector& qstate, unsigned control, unsigned target) {
+template <typename Precision>
+void apply_controlled_not(QStateVector<Precision>& qstate, unsigned control, unsigned target) {
     const auto cmask = bit_mask(control);
     const auto tmask = bit_mask(target);
 
@@ -82,7 +79,8 @@ void apply_controlled_not(QStateVector& qstate, unsigned control, unsigned targe
     }
 }
 
-void apply_swap(QStateVector& qstate, unsigned q1, unsigned q2) {
+template <typename Precision>
+void apply_swap(QStateVector<Precision>& qstate, unsigned q1, unsigned q2) {
     if (q1 == q2)
         return;
 
@@ -100,14 +98,15 @@ void apply_swap(QStateVector& qstate, unsigned q1, unsigned q2) {
     }
 }
 
-void measure(QStateVector& qstate, unsigned qubit, unsigned& creg) {
+template <typename Precision>
+void measure(QStateVector<Precision>& qstate, unsigned qubit, unsigned& creg) {
     if (qubit >= num_qubits(qstate)) {
         throw std::invalid_argument("Qubit index out of range.");
     }
 
     const auto mask = bit_mask(qubit);
 
-    double prob_0 = 0.0;
+    Precision prob_0 = 0.0;
     for (size_t i = 0; i < qstate.size(); ++i) {
         if ((i & mask) == 0) {
             prob_0 += std::norm(qstate[i]);
@@ -119,19 +118,36 @@ void measure(QStateVector& qstate, unsigned qubit, unsigned& creg) {
     unsigned result = dist(rng) ? 0 : 1;
     creg = result;
 
-    double normal_factor = 0.0;
+    Precision normal_factor = 0.0;
     for (size_t i = 0; i < qstate.size(); ++i) {
         if (((i & mask) ? 1 : 0) != result) {
-            qstate[i] = std::complex<double>(0.0, 0.0);
+            qstate[i] = std::complex<Precision>(0.0, 0.0);
         } else {
             normal_factor += std::norm(qstate[i]);
         }
     }
 
-    double inv_sqrt_normal_factor = 1.0 / std::sqrt(normal_factor);
+    Precision inv_sqrt_normal_factor = 1.0 / std::sqrt(normal_factor);
     for (size_t i = 0; i < qstate.size(); ++i) {
         qstate[i] *= inv_sqrt_normal_factor;
     }
 }
+
+// instantiation
+template void apply_hadamard(QStateVector<double>& qstate, unsigned target);
+template void apply_pauli_x(QStateVector<double>& qstate, unsigned target);
+template void apply_pauli_y(QStateVector<double>& qstate, unsigned target);
+template void apply_pauli_z(QStateVector<double>& qstate, unsigned target);
+template void apply_controlled_not(QStateVector<double>& qstate, unsigned control, unsigned target);
+template void apply_swap(QStateVector<double>& qstate, unsigned q1, unsigned q2);
+template void measure(QStateVector<double>& qstate, unsigned qubit, unsigned& creg);
+
+template void apply_hadamard(QStateVector<float>& qstate, unsigned target);
+template void apply_pauli_x(QStateVector<float>& qstate, unsigned target);
+template void apply_pauli_y(QStateVector<float>& qstate, unsigned target);
+template void apply_pauli_z(QStateVector<float>& qstate, unsigned target);
+template void apply_controlled_not(QStateVector<float>& qstate, unsigned control, unsigned target);
+template void apply_swap(QStateVector<float>& qstate, unsigned q1, unsigned q2);
+template void measure(QStateVector<float>& qstate, unsigned qubit, unsigned& creg);
 
 } // namespace cqq
