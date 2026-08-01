@@ -25,12 +25,22 @@ void apply_hadamard(QStateVector& qstate, unsigned target) {
     }
 }
 
+<<<<<<< Updated upstream
 void apply_pauli_x(QStateVector& qstate, unsigned target) {
     const auto mask = bit_mask(target);
+=======
+template <typename Precision> void apply_pauli_x(QStateVector<Precision>& qstate, unsigned target) {
+    const size_t block_size = size_t(1) << target;
+    const size_t num_blocks = qstate.size() / (block_size * 2);
 
-    for (size_t i = 0; i < qstate.size(); ++i) {
-        if ((i & mask) == 0) {
-            size_t j = i | mask;
+    for (size_t b = 0; b < num_blocks; ++b) {
+        const size_t high = b << (target + 1);
+
+        for (size_t low = 0; low < block_size; ++low) {
+            size_t i = high | low;
+            size_t j = i | block_size;
+>>>>>>> Stashed changes
+
             std::swap(qstate[i], qstate[j]);
         }
     }
