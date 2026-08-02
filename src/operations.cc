@@ -27,17 +27,12 @@ void apply_hadamard(QStateVector<Precision>& qstate, unsigned target) {
 }
 
 template <typename Precision> void apply_pauli_x(QStateVector<Precision>& qstate, unsigned target) {
-    const size_t block_size = size_t(1) << target;
-    const size_t num_blocks = qstate.size() / (block_size * 2);
+    const size_t mask = bit_mask(target);
+    const size_t step = mask << 1;
 
-    for (size_t b = 0; b < num_blocks; ++b) {
-        const size_t high = b << (target + 1);
-
-        for (size_t low = 0; low < block_size; ++low) {
-            size_t i = high | low;
-            size_t j = i | block_size;
-
-            std::swap(qstate[i], qstate[j]);
+    for (size_t block = 0; block < qstate.size(); block += step) {
+        for (size_t i = 0; i < mask; ++i) {
+            std::swap(qstate[block + i], qstate[block + i + mask]);
         }
     }
 }
