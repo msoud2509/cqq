@@ -13,15 +13,19 @@ namespace cqq {
 template <typename Precision>
 void apply_hadamard(QStateVector<Precision>& qstate, unsigned target) {
     const auto mask = bit_mask(target);
+    const size_t step = mask << 1;
     const auto inv_sqrt2 = static_cast<Precision>((1.0) / std::sqrt(2.0));
 
-    for (size_t i = 0; i < qstate.size(); ++i) {
-        if ((i & mask) == 0) {
-            size_t j = i | mask;
+    for (size_t block = 0; block < qstate.size(); block += step) {
+        for (size_t i = 0; i < mask; ++i) {
+            const size_t idx0 = block + i;
+            const size_t idx1 = idx0 + mask;
 
-            std::complex<Precision> temp = qstate[i];
-            qstate[i] = (temp + qstate[j]) * inv_sqrt2;
-            qstate[j] = (temp - qstate[j]) * inv_sqrt2;
+            std::complex<Precision> v0 = qstate[idx0];
+            std::complex<Precision> v1 = qstate[idx1];
+
+            qstate[idx0] = (v0 + v1) * inv_sqrt2;
+            qstate[idx1] = (v0 - v1) * inv_sqrt2;
         }
     }
 }
@@ -39,24 +43,28 @@ template <typename Precision> void apply_pauli_x(QStateVector<Precision>& qstate
 
 template <typename Precision> void apply_pauli_y(QStateVector<Precision>& qstate, unsigned target) {
     const auto mask = bit_mask(target);
+    const size_t step = mask << 1;
 
-    for (size_t i = 0; i < qstate.size(); ++i) {
-        if ((i & mask) == 0) {
-            size_t j = i | mask;
+    for (size_t block = 0; block < qstate.size(); block += step) {
+        for (size_t i = 0; i < mask; ++i) {
+            const size_t idx0 = block + i;
+            const size_t idx1 = idx0 + mask;
 
-            std::complex<Precision> temp = qstate[i];
-            qstate[i] = std::complex<Precision>(0, -1) * qstate[j];
-            qstate[j] = std::complex<Precision>(0, 1) * temp;
+            std::complex<Precision> temp = qstate[idx0];
+            qstate[idx0] = std::complex<Precision>(0, -1) * qstate[idx1];
+            qstate[idx1] = std::complex<Precision>(0, 1) * temp;
         }
     }
 }
 
 template <typename Precision> void apply_pauli_z(QStateVector<Precision>& qstate, unsigned target) {
     const auto mask = bit_mask(target);
+    const size_t step = mask << 1;
 
-    for (size_t i = 0; i < qstate.size(); ++i) {
-        if ((i & mask)) {
-            qstate[i] = -qstate[i];
+    for (size_t block = 0; block < qstate.size(); block += step) {
+        for (size_t i = 0; i < mask; ++i) {
+            // add by mask to offset calculation to the second half of the block (where target is 1)
+            qstate[block + i + mask] = -qstate[block + i + mask];
         }
     }
 }
