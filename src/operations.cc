@@ -71,13 +71,30 @@ template <typename Precision> void apply_pauli_z(QStateVector<Precision>& qstate
 
 template <typename Precision>
 void apply_controlled_not(QStateVector<Precision>& qstate, unsigned control, unsigned target) {
+    const size_t low_bit  = std::min(control, target);
+    const size_t high_bit = std::max(control, target);
+
+    const auto low_mask  = bit_mask(low_bit);
+    const auto high_mask = bit_mask(high_bit);
+
     const auto cmask = bit_mask(control);
     const auto tmask = bit_mask(target);
 
-    for (size_t i = 0; i < qstate.size(); ++i) {
-        if ((i & cmask) && !(i & tmask)) {
-            size_t j = i | tmask;
-            std::swap(qstate[i], qstate[j]);
+    const auto step_low  = low_mask << 1;
+    const auto step_high = high_mask << 1;
+
+    for (size_t high = 0; high < qstate.size(); high += step_high) {
+        for (size_t mid = 0; mid < high_mask; mid += step_low) {
+            for (size_t low = 0; low < low_mask; ++low) {
+                const size_t base = high | mid | low;
+
+                size_t i = base | cmask; 
+                i &= ~tmask; 
+
+                size_t j = i | tmask;
+
+                std::swap(qstate[i], qstate[j]);
+            }
         }
     }
 }
@@ -87,14 +104,22 @@ void apply_swap(QStateVector<Precision>& qstate, unsigned q1, unsigned q2) {
     if (q1 == q2)
         return;
 
-    const auto m1 = bit_mask(q1);
-    const auto m2 = bit_mask(q2);
+    const size_t low_bit  = std::min(q1, q2);
+    const size_t high_bit = std::max(q1, q2);
 
-    for (size_t i = 0; i < qstate.size(); ++i) {
-        if ((i & m1) != (i & m2)) {
-            size_t j = i ^ (m1 | m2);
+    const size_t low_mask  = bit_mask(low_bit);
+    const size_t high_mask = bit_mask(high_bit);
 
-            if (i < j) {
+    const size_t step_low  = low_mask << 1;
+    const size_t step_high = high_mask << 1;
+
+    for (size_t high = 0; high < qstate.size(); high += step_high) {
+        for (size_t mid = 0; mid < high_mask; mid += step_low) {
+            for (size_t low = 0; low < low_mask; ++low) {
+                size_t base = high | mid | low;
+                size_t i = base | low_mask;
+                size_t j = base | high_mask;
+
                 std::swap(qstate[i], qstate[j]);
             }
         }
@@ -108,11 +133,12 @@ void measure(QStateVector<Precision>& qstate, unsigned qubit, unsigned& creg) {
     }
 
     const auto mask = bit_mask(qubit);
+    const auto step = mask << 1;
 
     Precision prob_0 = 0.0;
-    for (size_t i = 0; i < qstate.size(); ++i) {
-        if ((i & mask) == 0) {
-            prob_0 += std::norm(qstate[i]);
+    for (size_t block = 0; block < qstate.size(); block += step) {
+        for (size_t i = 0; i < mask; ++i) {
+            prob_0 += std::norm(qstate[block + i]);
         }
     }
 
@@ -121,18 +147,25 @@ void measure(QStateVector<Precision>& qstate, unsigned qubit, unsigned& creg) {
     unsigned result = dist(rng) ? 0 : 1;
     creg = result;
 
-    Precision normal_factor = 0.0;
-    for (size_t i = 0; i < qstate.size(); ++i) {
-        if (((i & mask) ? 1 : 0) != result) {
-            qstate[i] = std::complex<Precision>(0.0, 0.0);
-        } else {
-            normal_factor += std::norm(qstate[i]);
+    // collapse remaining state and normalize
+    Precision normal_factor = (result == 0) ? prob_0 : (static_cast<Precision>(1.0) - prob_0);
+    Precision inv_sqrt_normal_factor = static_cast<Precision>(1.0) / std::sqrt(normal_factor);
+
+    if (result == 0) {
+        for (size_t block = 0; block < qstate.size(); block += step) {
+            for (size_t i = 0; i < mask; ++i) {
+                qstate[block + i] *= inv_sqrt_normal_factor;
+                qstate[block + i + mask] = std::complex<Precision>(0.0, 0.0);
+            }
         }
     }
-
-    Precision inv_sqrt_normal_factor = 1.0 / std::sqrt(normal_factor);
-    for (size_t i = 0; i < qstate.size(); ++i) {
-        qstate[i] *= inv_sqrt_normal_factor;
+    else {
+        for (size_t block = 0; block < qstate.size(); block += step) {
+            for (size_t i = 0; i < mask; ++i) {
+                qstate[block + i] = std::complex<Precision>(0.0, 0.0);
+                qstate[block + i + mask] *= inv_sqrt_normal_factor;
+            }
+        }
     }
 }
 
