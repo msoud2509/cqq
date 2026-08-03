@@ -12,7 +12,7 @@ namespace cqq {
 
 template <typename Precision>
 void apply_hadamard(QStateVector<Precision>& qstate, unsigned target) {
-    const auto mask = bit_mask(target) + 1;
+    const auto mask = bit_mask(target);
     const auto inv_sqrt2 = static_cast<Precision>((1.0) / std::sqrt(2.0));
 
     for (size_t i = 0; i < qstate.size(); ++i) {
