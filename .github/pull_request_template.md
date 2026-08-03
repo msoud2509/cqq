@@ -1,7 +1,7 @@
 ## Description of Changes
 *Add description of changes here*
 
-## Make sure following boxes are checked before submitting:
+## Make sure following boxes are checked/addressed before submitting:
 - [ ] Necessary tests have been added
     - If no new tests are required, please explain why:
 - [ ] Corresponding issue(s) have been attached
