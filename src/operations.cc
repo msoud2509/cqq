@@ -71,16 +71,16 @@ template <typename Precision> void apply_pauli_z(QStateVector<Precision>& qstate
 
 template <typename Precision>
 void apply_controlled_not(QStateVector<Precision>& qstate, unsigned control, unsigned target) {
-    const size_t low_bit  = std::min(control, target);
+    const size_t low_bit = std::min(control, target);
     const size_t high_bit = std::max(control, target);
 
-    const auto low_mask  = bit_mask(low_bit);
+    const auto low_mask = bit_mask(low_bit);
     const auto high_mask = bit_mask(high_bit);
 
     const auto cmask = bit_mask(control);
     const auto tmask = bit_mask(target);
 
-    const auto step_low  = low_mask << 1;
+    const auto step_low = low_mask << 1;
     const auto step_high = high_mask << 1;
 
     for (size_t high = 0; high < qstate.size(); high += step_high) {
@@ -88,8 +88,8 @@ void apply_controlled_not(QStateVector<Precision>& qstate, unsigned control, uns
             for (size_t low = 0; low < low_mask; ++low) {
                 const size_t base = high | mid | low;
 
-                size_t i = base | cmask; 
-                i &= ~tmask; 
+                size_t i = base | cmask;
+                i &= ~tmask;
 
                 size_t j = i | tmask;
 
@@ -104,13 +104,13 @@ void apply_swap(QStateVector<Precision>& qstate, unsigned q1, unsigned q2) {
     if (q1 == q2)
         return;
 
-    const size_t low_bit  = std::min(q1, q2);
+    const size_t low_bit = std::min(q1, q2);
     const size_t high_bit = std::max(q1, q2);
 
-    const size_t low_mask  = bit_mask(low_bit);
+    const size_t low_mask = bit_mask(low_bit);
     const size_t high_mask = bit_mask(high_bit);
 
-    const size_t step_low  = low_mask << 1;
+    const size_t step_low = low_mask << 1;
     const size_t step_high = high_mask << 1;
 
     for (size_t high = 0; high < qstate.size(); high += step_high) {
@@ -158,8 +158,7 @@ void measure(QStateVector<Precision>& qstate, unsigned qubit, unsigned& creg) {
                 qstate[block + i + mask] = std::complex<Precision>(0.0, 0.0);
             }
         }
-    }
-    else {
+    } else {
         for (size_t block = 0; block < qstate.size(); block += step) {
             for (size_t i = 0; i < mask; ++i) {
                 qstate[block + i] = std::complex<Precision>(0.0, 0.0);
